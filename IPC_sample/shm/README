@@ -1,0 +1,98 @@
+会出现段错误 
+
+是因为
+http://note.youdao.com/noteshare?id=04c3c7ba2e0f1cd7dca3464faa59b8b4&sub=45F6D7C2E7834F74A3304C048B6AEF78
+
+另外,在运行之前,需要建立 一个文件夹  SHM_PATH
+,在运行时,这个文件夹下不会产生任何东西,这个文件夹的大小不会产生变化
+
+
+该目录下实现了 3个进程间的 互斥,没有做信息的通信(通信可以在共享内存 的 结构体中扩展)
+
+通信是用共享内存做的,已经做了共享内存的框架,可以添加消息的传递
+同步是用读写锁做的
+
+读写锁在共享内存中
+
+
+
+
+共享内存的删除
+
+
+$ ipcs -m
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status      
+0x00000000 294912     suweishuai 600        524288     2          dest         
+0x00000000 1343489    suweishuai 600        524288     2          dest         
+0x00000000 655362     suweishuai 600        524288     2          dest         
+0x00000000 524291     suweishuai 600        524288     2          dest         
+0x00000000 819204     suweishuai 600        524288     2          dest         
+0x00000000 851973     suweishuai 600        16777216   2                       
+0x00000000 1146886    suweishuai 600        524288     2          dest         
+0x00000000 983047     suweishuai 600        16777216   2          dest         
+0x00000000 1245192    suweishuai 600        524288     2          dest         
+0x00000000 1441801    suweishuai 600        524288     2          dest         
+0x72013d91 1474570    suweishuai 666        56         1           
+
+查看现存的共享内存 的 shmid  和 权限 和大小 和状态
+
+
+
+
+$ ipcs -t
+
+------ Message Queues Send/Recv/Change Times --------
+msqid    owner      send                 recv                 change              
+
+------ Shared Memory Attach/Detach/Change Times --------
+shmid      owner      attached             detached             changed             
+294912     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:22     
+1343489    suweishuai Nov 21 09:08:30      Nov 21 09:08:30      Nov 21 09:05:26     
+655362     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:24     
+524291     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:23     
+819204     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:25     
+851973     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:26     
+1146886    suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:30     
+983047     suweishuai Nov 21 09:04:31      Nov 21 09:04:31      Nov 21 09:04:28     
+1245192    suweishuai Nov 21 09:04:31      Not set              Nov 21 09:04:31     
+1441801    suweishuai Nov 21 09:05:45      Nov 21 09:05:45      Nov 21 09:05:36     
+1474570    suweishuai Nov 21 09:41:15      Not set              Nov 21 09:41:15     
+
+------ Semaphore Operation/Change Times --------
+semid    owner      last-op                    last-changed 
+
+
+查看创建时间  在 changed 列
+
+
+$ ipcs -p
+
+------ Message Queues PIDs --------
+msqid      owner      lspid      lrpid     
+
+------ Shared Memory Creator/Last-op PIDs --------
+shmid      owner      cpid       lpid      
+294912     suweishuai 5036       5344      
+1343489    suweishuai 5689       6146      
+655362     suweishuai 5244       5344      
+524291     suweishuai 5109       5344      
+819204     suweishuai 5241       5344      
+851973     suweishuai 5121       5344      
+1146886    suweishuai 5121       5344      
+983047     suweishuai 5241       5344      
+1245192    suweishuai 5063       4064      
+1441801    suweishuai 5719       5743      
+1474570    suweishuai 7490       7490      
+
+
+
+查看 ipc 对应 的进程号  ,在 cpid  列 ,一般创建的在最后一行
+
+
+以上三点确定 1474570 是我 创建的进程中产生的 共享内存的shmid
+
+
+ipcrm -m 1474570
+即可删除共享内存
