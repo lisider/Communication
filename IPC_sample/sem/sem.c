@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sys/sem.h>
 
+int semid;
 union semun {
 	int val; /* value for SETVAL */
 	struct semid_ds *buf; /* buffer for IPC_STAT, IPC_SET */
@@ -30,10 +31,84 @@ int sem_V(int semid, int semnum)
 	return (semop(semid,&sops,1));
 }
 
+
+
+void fun_father(void){
+	int flag;
+		while(1){
+
+			sleep(1);
+			flag = sem_P(semid,0)  ;
+			if ( flag )
+			{
+				perror("P operate error") ;
+				return -1 ;
+			}
+			printf("1111111111111\n");
+			printf("1111111111111\n");
+			printf("1111111111111\n");
+			printf("1111111111111\n");
+			printf("1111111111111\n");
+			printf("1111111111111\n");
+
+
+
+			if (sem_V(semid, 0) < 0)
+			{
+				perror("V operate error") ;
+				return -1 ;
+			}
+		}
+
+}
+
+
+void fun_son(void){
+	int flag;
+		while(1){
+
+			sleep(1);
+			flag = sem_P(semid,0)  ;
+			if ( flag )
+			{
+				perror("P operate error") ;
+				return -1 ;
+			}
+#if 0
+			printf("P operate end\n") ;
+			ret =semctl(semid,0,GETVAL,arg);
+			printf("after P sem[0].val=[%d]\n",ret);
+			system("date") ;
+			if ( argc == 1 )
+			{
+				sleep(120) ;
+			}
+			printf("V operate begin\n") ;
+#endif
+
+			printf("222222222222222222\n");
+			printf("222222222222222222\n");
+			printf("222222222222222222\n");
+			printf("222222222222222222\n");
+			printf("222222222222222222\n");
+			printf("222222222222222222\n");
+
+
+
+			if (sem_V(semid, 0) < 0)
+			{
+				perror("V operate error") ;
+				return -1 ;
+			}
+		}
+
+
+}
+
 int main(int argc, char **argv)
 {
 	int key ;
-	int semid,ret;
+	int ret;
 	union semun arg;
 	struct sembuf semop;
 	int flag ;
@@ -51,7 +126,7 @@ int main(int argc, char **argv)
 		perror("create semget error");
 		return -1;
 	}
-	arg.val = 1;
+	arg.val = 1;//这个是1个信号量的初值,标识有几个资源
 	/***对0号信号量设置初始值***/
 	ret =semctl(semid,0,SETVAL,arg);
 	if (ret < 0 )
@@ -60,7 +135,7 @@ int main(int argc, char **argv)
 		semctl(semid,0,IPC_RMID,arg);
 		return -1 ;
 	}
-#if 0
+#if 1
 	/***取0号信号量的值***/
 	ret =semctl(semid,0,GETVAL,arg);
 	printf("after semctl setval  sem[0].val =[%d]\n",ret);
@@ -72,78 +147,10 @@ int main(int argc, char **argv)
 	if(ret < 0){
 		perror("fork");
 	}else if(ret > 0){ //father
-		while(1){
-
-			flag = sem_P(semid,0)  ;
-			if ( flag )
-			{
-				perror("P operate error") ;
-				return -1 ;
-			}
-#if 0
-			printf("P operate end\n") ;
-			ret =semctl(semid,0,GETVAL,arg);
-			printf("after P sem[0].val=[%d]\n",ret);
-			system("date") ;
-			if ( argc == 1 )
-			{
-				sleep(120) ;
-			}
-			printf("V operate begin\n") ;
-#endif
-			printf("1111111111111\n");
-			printf("1111111111111\n");
-			printf("1111111111111\n");
-			printf("1111111111111\n");
-			printf("1111111111111\n");
-			printf("1111111111111\n");
-
-
-
-			if (sem_V(semid, 0) < 0)
-			{
-				perror("V operate error") ;
-				return -1 ;
-			}
-		}
+		fun_father();
 
 	}else{//son
-		while(1){
-
-			flag = sem_P(semid,0)  ;
-			if ( flag )
-			{
-				perror("P operate error") ;
-				return -1 ;
-			}
-#if 0
-			printf("P operate end\n") ;
-			ret =semctl(semid,0,GETVAL,arg);
-			printf("after P sem[0].val=[%d]\n",ret);
-			system("date") ;
-			if ( argc == 1 )
-			{
-				sleep(120) ;
-			}
-			printf("V operate begin\n") ;
-#endif
-
-			printf("222222222222222222\n");
-			printf("222222222222222222\n");
-			printf("222222222222222222\n");
-			printf("222222222222222222\n");
-			printf("222222222222222222\n");
-			printf("222222222222222222\n");
-
-
-
-			if (sem_V(semid, 0) < 0)
-			{
-				perror("V operate error") ;
-				return -1 ;
-			}
-		}
-
+		fun_son();
 	}
 #if 0
 	printf("V operate end\n") ;
