@@ -1,0 +1,2 @@
+linux 自带的 定时器, alarm() 会打断 sleep ,
+      这里展示的demo 也实现了定时器,但是不会打断sleep
