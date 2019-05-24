@@ -12,31 +12,25 @@
 #include <unistd.h>
 
 pthread_t   pthid1,pthid2;
-sem_t       sem1;
-sem_t       sem2;
 
 int i = 1000;
 
 static void * fun1(void *arg){
     while(1){
-        sem_wait(&sem1);
 
         printf("thread1 --- %d\n",--i);
         usleep(100000);
 
-        sem_post(&sem2);
     }
     return NULL;
 }
 
 static void * fun2(void *arg){
     while(1){
-        sem_wait(&sem2);
 
         printf("thread2 --- %d\n",++i);
         usleep(100000);
 
-        sem_post(&sem1);
     }
     return NULL;
 }
@@ -45,8 +39,6 @@ static void * fun2(void *arg){
 int main(int argc, const char *argv[])
 {
 
-    sem_init(&sem1, 0, 1);
-    sem_init(&sem2, 0, 0);
 
     if(0 != pthread_create(&pthid1,NULL,fun1,NULL)){
         perror("pthid1");

@@ -23,7 +23,9 @@ static void * fun1(void *arg){
 		else 
 			count ++;
 
-		puts("first");
+		puts("first +++");
+        usleep(1000);
+		puts("first ---");
 
 		pthread_cond_signal(&cond2);
 	}
@@ -34,7 +36,9 @@ static void * fun2(void *arg){
 	while(1){
 		pthread_cond_wait(&cond2,&mutex);
 
-		puts("second");
+		puts("second +++");
+        usleep(1000);
+		puts("second ---");
 
 		pthread_cond_signal(&cond1);
 	}

@@ -11,23 +11,29 @@
 
 pthread_t       pthid1,pthid2,pthid_control;
 pthread_cond_t  cond1,cond2;
-pthread_mutex_t mutex;
 
 int count = 0;
 
 static void * fun1(void *arg){
-	puts("first +++");
-    usleep(1000);
-	puts("first ---");
-	pthread_cond_signal(&cond2);
+
+	while(1){
+
+		puts("first +++");
+        usleep(1000);
+		puts("first ---");
+
+	}
 	return NULL;
 }
 
 static void * fun2(void *arg){
-	pthread_cond_wait(&cond2,&mutex);
-	puts("second +++");
-    usleep(1000);
-	puts("second ---");
+	while(1){
+
+		puts("second +++");
+        usleep(1000);
+		puts("second ---");
+
+	}
 	return NULL;
 }
 
@@ -36,23 +42,6 @@ static void * fun2(void *arg){
 
 int main(int argc, const char *argv[])
 {
-
-#if 1
-	if(0 != pthread_mutex_init(&mutex,NULL)){
-		perror("mutex init");
-		return -1;
-	}
-#endif
-
-
-	if(0 != pthread_cond_init(&cond1,NULL)){
-		perror("cond1 init");
-		return -1;
-	}
-	if(0 != pthread_cond_init(&cond2,NULL)){
-		perror("cond2 init");
-		return -1;
-	}
 
 	if(0 != pthread_create(&pthid1,NULL,fun1,NULL)){
 		perror("pthid1");

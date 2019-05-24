@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-pthread_t       pthid1,pthid2,pthid_control;
+pthread_t       pthid1,pthid2;
 pthread_cond_t  cond1,cond2;
 pthread_mutex_t mutex;
 
@@ -18,29 +18,47 @@ int count = 0;
 static void * fun1(void *arg){
 
 	while(1){
-		pthread_mutex_lock(&mutex);
+        printf("%d\n",__LINE__);
 		if(count != 0)
+        {
+            printf("%d\n",__LINE__);
 			pthread_cond_wait(&cond1,&mutex);
+            printf("%d\n",__LINE__);
+            pthread_mutex_lock(&mutex);
+        }
 		else 
-			count ++;
+        {
+            printf("%d\n",__LINE__);
 
-		puts("first");
+            pthread_mutex_lock(&mutex);
+        }
+        count ++;
+        printf("%d\n",__LINE__);
+
+        puts("first +++");
+        usleep(1000);
+        puts("first ---");
 
 		pthread_mutex_unlock(&mutex);
 		pthread_cond_signal(&cond2);
+        printf("%d\n",__LINE__);
 	}
 	return NULL;
 }
 
 static void * fun2(void *arg){
 	while(1){
+        printf("%d\n",__LINE__);
 		pthread_mutex_lock(&mutex);
 		pthread_cond_wait(&cond2,&mutex);
 
-		puts("second");
+        puts("second +++");
+        usleep(1000);
+        puts("second ---");
 
 		pthread_mutex_unlock(&mutex);
 		pthread_cond_signal(&cond1);
+        printf("%d\n",__LINE__);
 	}
 	return NULL;
 }
@@ -50,7 +68,7 @@ static void * fun2(void *arg){
 
 int main(int argc, const char *argv[])
 {
-#if 0 //锁不初始化也没问题
+#if 1 //锁不初始化也没问题
 	if(0 != pthread_mutex_init(&mutex,NULL)){
 		perror("mutex init");
 		return -1;
