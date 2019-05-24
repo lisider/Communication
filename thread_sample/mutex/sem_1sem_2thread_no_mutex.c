@@ -14,29 +14,24 @@ static int i = 1000;
 
 static void * fun1(void *arg){
 	while(1){
-		sem_wait(&sem);
         printf("thread1 --- %d\n",--i);
         usleep(1000);
         printf("thread1 --- %d\n",++i);
-		sem_post(&sem);
 	}
 	return NULL;
 }
 
 static void * fun2(void *arg){
 	while(1){
-		sem_wait(&sem);
         printf("thread2 --- %d\n",--i);
         usleep(1000);
         printf("thread2 --- %d\n",++i);
-		sem_post(&sem);
 	}
 	return NULL;
 }
 
 int main(int argc, const char *argv[])
 {
-	sem_init(&sem, 0, 1);
 
 	if(0 != pthread_create(&pthid1,NULL,fun1,NULL)){
 		perror("pthid1");
@@ -49,7 +44,6 @@ int main(int argc, const char *argv[])
 
 	pthread_join(pthid1,NULL);
 	pthread_join(pthid2,NULL);
-    sem_destroy(&sem);
 
 	return 0;
 }

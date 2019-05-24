@@ -10,29 +10,25 @@
 #include <stdio.h>
 #include <unistd.h>
 
-pthread_rwlock_t lock;
 int i = 1000;
 
 void * write1(void *arg)
 {
     while(1){
-        pthread_rwlock_wrlock(&lock);
         printf("write1 --- %d\n",--i);
         usleep(1000);
         printf("write1 --- %d\n",--i);
-        pthread_rwlock_unlock(&lock);
     }
+
     return((void *)1);
 }
 
 void *write2(void *arg)
 {
     while(1){
-        pthread_rwlock_wrlock(&lock);
         printf("write2 --- %d\n",++i);
         usleep(1000);
         printf("write2 --- %d\n",++i);
-        pthread_rwlock_unlock(&lock);
     }
 
     return((void *)2);
@@ -41,11 +37,9 @@ void *write2(void *arg)
 void *read1(void *arg)
 {
     while(1){
-        pthread_rwlock_rdlock(&lock);
         printf("read1 --- %d\n",i);
         usleep(1000);
         printf("read1 --- %d\n",i);
-        pthread_rwlock_unlock(&lock);
     }
     return((void *)3);
 }
@@ -53,11 +47,9 @@ void *read1(void *arg)
 void *read2(void *arg)
 {
     while(1){
-        pthread_rwlock_rdlock(&lock);
         printf("read2 --- %d\n",i);
         usleep(1000);
         printf("read2 --- %d\n",i);
-        pthread_rwlock_unlock(&lock);
     }
     return((void *)3);
 }
@@ -67,12 +59,6 @@ int main(void)
     pthread_t   th1,th2,th3,th4;
     int         ret;
 
-    ret = pthread_rwlock_init(&lock,NULL);
-    if( ret != 0  )
-    {
-        perror("pthread_rwlock_init");
-        return -1;
-    }
 
     ret =pthread_create(&th1,NULL,write1,NULL);
     if( ret != 0 )
@@ -103,6 +89,5 @@ int main(void)
     pthread_join(th2,NULL);
     pthread_join(th3,NULL);
     pthread_join(th4,NULL);
-    pthread_rwlock_destroy(&lock);
     return 1;
 }

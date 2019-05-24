@@ -10,32 +10,27 @@
 #include <unistd.h>
 
 pthread_t       pthid1,pthid2;
-pthread_mutex_t mutex;
 
 int i = 1000;
 
 static void * fun1(void *arg){
     while(1){
-        pthread_mutex_lock(&mutex);
 
         printf("thread1 --- %d\n",--i);
         usleep(1000);
         printf("thread1 --- %d\n",++i);
 
-        pthread_mutex_unlock(&mutex);
     }
     return NULL;
 }
 
 static void * fun2(void *arg){
     while(1){
-        pthread_mutex_lock(&mutex);
 
         printf("thread2 --- %d\n",--i);
         usleep(1000);
         printf("thread2 --- %d\n",++i);
 
-        pthread_mutex_unlock(&mutex);
     }
     return NULL;
 }
@@ -48,10 +43,6 @@ int main(int argc, const char *argv[])
     int *retval;
 
 
-    if(0 != pthread_mutex_init(&mutex,NULL)){
-        perror("mutex init");
-        return -1;
-    }
 
     if(0 != pthread_create(&pthid1,NULL,fun1,NULL)){
         perror("pthid1");
@@ -65,8 +56,6 @@ int main(int argc, const char *argv[])
     pthread_join(pthid1,(void **)&retval);
     //printf("the exit status of pthid2 is %d\n",*retval);
     pthread_join(pthid2,NULL);
-
-    pthread_mutex_destroy(&mutex);
 
     return 0;
 }

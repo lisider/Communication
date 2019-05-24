@@ -1,8 +1,77 @@
-sem_2sem_2thread.c
 
-/*
- * 这里面用1个信号量实现了两个线程的互斥
- * fun1 和fun2 分别表示为 1个模块
- * 执行顺序不定,但是两个模块不会同时执行
- * */
+互斥之前和互斥之后的效果,可以通过 ./a.out > log 来收集 log ,并比较
+互斥前后的区别
+
+mutexlock_1lock_2thread_no_mutex.c
+    没有互斥
+mutexlock_1lock_2thread.c
+    互斥之后
+
+sem_1sem_2thread.c
+    没有互斥
+sem_1sem_2thread_no_mutex.c
+    互斥之后
+
+readwritelock_1lock_4thread.c
+    没有互斥
+readwritelock_1lock_4thread_no_mutex.c
+    互斥之后
+
+
+
+    mutex
+    https://www.cnblogs.com/Flychown/p/7401819.html
+
+#include <pthread.h>
+    -lpthread
+
+// 初始化一个互斥锁
+    int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t
+            *attr);
+    or pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;// 互斥锁的默认属性
+
+    pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER 等价于
+    pthread_mutex_init(&mutex, NULL)
+    -------------------------------------------------------------------------------------
+    // 销毁一个互斥锁
+    int pthread_mutex_destroy(pthread_mutex_t *mutex);
+    -------------------------------------------------------------------------------------
+    // 获得互斥锁
+    int pthread_mutex_lock(pthread_mutex_t *mutex);
+    // 获得互斥锁,不阻塞,立即返回
+    int pthread_mutex_trylock(pthread_mutex_t *mutex);
+    -------------------------------------------------------------------------------------
+    // 带有超时的获取互斥锁
+    int pthread_mutex_timedlock(pthread_mutex_t *mutex, const struct timespec
+            *time);
+    -------------------------------------------------------------------------------------
+    // 释放一个互斥锁
+    int pthread_mutex_unlock(pthread_mutex_t *mutex);
+    以上函数返回值:成功0,失败设置errno
+
+
+
+
+    sem
+
+    https://blog.csdn.net/htt780/article/details/77645581
+#include<semaphore.h>
+    int sem_init (sem_t *sem, int pshared, unsigned int value);
+    int sem_wait(sem_t * sem);
+    int sem_post(sem_t * sem);
+    int sem_destroy (sem_t *sem);
+
+
+    rwlock
+
+    http://blog.chinaunix.net/uid-27177626-id-3791049.html
+    https://blog.csdn.net/longwang155069/article/details/52211024
+
+#include <pthread.h>
+    int pthread_rwlock_init(pthread_rwlock_t *rwptr, const pthread_rwlockattr_t *attr);
+    int pthread_rwlock_rdlock(pthread_rwlock_t *rwptr);
+    int pthread_rwlock_wrlock(pthread_rwlock_t *rwptr);
+    int pthread_rwlock_unlock(pthread_rwlock_t *rwptr);
+    int pthread_rwlock_destroy(pthread_rwlock_t *rwptr);
+
 
