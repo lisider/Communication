@@ -1,2 +1,26 @@
 linux 自带的 定时器, alarm() 会打断 sleep ,
       这里展示的demo 也实现了定时器,但是不会打断sleep
+      这里说的不会打断sleep ,是 不会 让 sleep 直接退出.
+
+timer_create() // 创建定时器
+timer_settime() // 初始化定时器
+timer_delete() // 销毁定时器
+
+#include <signal.h>
+#include <time.h>
+
+
+int timer_create(clockid_t clockid, struct sigevent *sevp,
+ 	timer_t *timerid);
+
+
+
+int timer_settime(timer_t timerid, int flags,
+ 	 const struct itimerspec *new_value,
+ 	 struct itimerspec *old_value);
+int timer_gettime(timer_t timerid, struct itimerspec *curr_value);
+
+int timer_delete(timer_t timerid);
+
+
+Link with -lrt.
